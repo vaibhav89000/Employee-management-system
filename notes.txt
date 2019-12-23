@@ -1,0 +1,89 @@
+sql statements used for following operations:
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+for db connection:
+-----------------------------------------------------------------------------------------------------------------------------------------------
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=company", $username, $password);
+    // set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // echo "Connected successfully";
+    }
+catch(PDOException $e)
+    {
+    echo "Connection failed: " . $e->getMessage();
+    }
+?>
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+for insert data:
+----------------------------------------------------------------------------------------------------------------------------------------------
+$sql = 'INSERT INTO people(name, email) VALUES(:name, :email)';
+  $statement = $conn->prepare($sql);
+  if ($statement->execute([':name' => $name, ':email' => $email])) {
+    $message = 'data inserted successfully';
+  }
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+for fetch all data from table:
+-----------------------------------------------------------------------------------------------------------------------------------------------
+$sql = 'SELECT * FROM people';
+$statement = $conn->prepare($sql);
+$statement->execute();
+$people = $statement->fetchAll(PDO::FETCH_OBJ);
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+for delete data:
+-----------------------------------------------------------------------------------------------------------------------------------------------
+$sql = 'DELETE FROM people WHERE id=:id';
+$statement = $conn->prepare($sql);
+if ($statement->execute([':id' => $id])) {
+  header("Location: index.php");
+}
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+for update data:
+-----------------------------------------------------------------------------------------------------------------------------------------------
+$sql = 'SELECT * FROM people WHERE id=:id';
+$statement = $conn->prepare($sql);
+$statement->execute([':id' => $id ]);
+$person = $statement->fetch(PDO::FETCH_OBJ);
+if (isset ($_POST['name'])  && isset($_POST['email']) ) {
+  $name = $_POST['name'];
+  $email = $_POST['email'];
+  $sql = 'UPDATE people SET name=:name, email=:email WHERE id=:id';
+  $statement = $conn->prepare($sql);
+  if ($statement->execute([':name' => $name, ':email' => $email, ':id' => $id])) {
+    header("Location: index.php");
+  }
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+IMPORTANT:-
+
+strip_tags() to remove html tag (no html tag  and no effects of html code ion input) to save from sql injection 
+htmlentities() to remove html effects but show the html code   
